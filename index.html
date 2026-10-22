@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AbacusArena - Premier Free Platform for Mental Math & Coding</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        html { scroll-behavior: smooth; }
+        
+        /* Light Theme Overrides */
+        .theme-light body { background-color: #f8fafc; color: #334155; }
+        .theme-light header { background-color: rgba(248,250,252,.92); border-color: #e2e8f0; }
+        .theme-light .brand-title { color: #8b5cf6 !important; }
+        .theme-light .light-text { color: #1e293b !important; }
+        .theme-light .muted-text { color: #475569; }
+        .theme-light .theme-panel { background-color: #ffffff; border-color: #e2e8f0; }
+        .theme-light .team-card { background-color: #ffffff !important; border-color: #cbd5e1 !important; color: #1e293b !important; }
+        .theme-light .custom-modal-bg { background-color: #ffffff !important; color: #1e293b !important; border-color: #cbd5e1 !important; }
+        .theme-light .hero-glass-btn { background-color: #ffffff !important; border-color: #cbd5e1 !important; color: #1e293b !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .theme-light .hero-glass-btn:hover { background-color: #f1f5f9 !important; }
+        .theme-light #mission, .theme-light #about-us, .theme-light #showcase { background-color: #f1f5f9; border-color: #e2e8f0; }
+        .theme-light footer { background: #eef2f7; border-color: #e2e8f0; }
+        .theme-light .demo-scene { color: #172033; }
+        .theme-light .showcase-card { color: #172033; }
+
+        /* Dark Theme Base */
+        body { background-color: #090d16; color: #f1f5f9; font-family: system-ui, -apple-system, sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
+        header { background-color: rgba(9, 13, 22, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+        .brand-title { color: #f8fafc; }
+        .glass-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px); }
+        .team-card { background-color: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .custom-modal-bg { background-color: #0f172a; border: 1px solid rgba(255, 255, 255, 0.1); color: #f8fafc; }
+        .hero-glass-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); }
+        .hero-glass-btn:hover { background: rgba(255, 255, 255, 0.1); }
+        
+        .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1); will-change: opacity, transform; }
+        .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+        @keyframes pop-in { 0% { opacity: 0; transform: scale(0.6); } 70% { transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
+        .cinematic-box { animation: pop-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-purple-500 selection:text-white">
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-violet-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-purple-500/20 group-hover:scale-105 transition">
+                    A
+                </div>
+                <span class="text-xl font-black tracking-tight brand-title transition-colors">AbacusArena</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+                <a href="#mission" class="hover:text-purple-400 transition">Mission</a>
+                <a href="#platforms" class="hover:text-purple-400 transition">Our Platforms</a>
+                <a href="#about-us" class="hover:text-purple-400 transition">About Us</a>
+                <a href="#showcase" class="hover:text-purple-400 transition">Watch Arenas</a>
+            </nav>
+            <div class="flex items-center gap-4">
+                <button id="theme-toggle" type="button" class="p-2.5 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 text-slate-300 transition" aria-label="Switch to dark mode" title="Switch theme">
+                    <i id="theme-icon" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+                <a href="#platforms" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-sm shadow-lg shadow-purple-600/25 transition">
+                    Explore Platforms <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative pt-24 pb-20 overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent pointer-events-none"></div>
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/25 text-purple-400 text-xs sm:text-sm font-semibold mb-6">
+                <span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span> 100% Free Forever for Students Worldwide
+            </div>
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-tight">
+                The Premier Platform for <span class="bg-gradient-to-r from-purple-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent">Mental Math & Coding</span> (while remaining 100% free)
+            </h1>
+            <p class="mt-6 text-lg sm:text-xl muted-text max-w-3xl mx-auto leading-relaxed">
+                Welcome to AbacusArena.org! Established in April 2026, our platform is dedicated to empowering students globally to master mental arithmetic and algorithmic programming in completely unrestricted environments.
+            </p>
+     <div class="mt-10 flex flex-wrap justify-center gap-4">
+                <a href="https://math.abacusarena.org" target="_blank" rel="noopener noreferrer" class="px-8 py-4 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-base shadow-xl shadow-purple-600/30 transition flex items-center gap-3">
+                    <i data-lucide="calculator" class="w-5 h-5"></i> Visit Math Arena <i data-lucide="external-link" class="w-4 h-4 opacity-70"></i>
+                </a>
+                <a href="https://code.abacusarena.org" target="_blank" rel="noopener noreferrer" class="px-8 py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-base shadow-xl shadow-violet-600/30 transition flex items-center gap-3">
+                    <i data-lucide="code-2" class="w-5 h-5"></i> Visit Coding Arena <i data-lucide="external-link" class="w-4 h-4 opacity-70"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section id="mission" class="py-24 bg-slate-900/40 border-y border-slate-800/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <span class="text-purple-400 text-sm font-bold uppercase tracking-widest">Our Core Mission</span>
+                    <h2 class="text-3xl sm:text-4xl font-black light-text tracking-tight">Democratizing elite mental calculation and technical training.</h2>
+                    <p class="muted-text text-base sm:text-lg leading-relaxed">
+                        We firmly believe that world-class mental agility and coding proficiency should never be restricted by financial barriers. AbacusArena provides meticulously engineered, high-performance learning environments for students worldwide at zero cost.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                        <div class="p-5 rounded-2xl glass-card theme-panel">
+                            <div class="text-purple-400 font-bold text-lg mb-1">100% Free</div>
+                            <p class="text-xs muted-text">Completely free of subscriptions, paywalls, or advertisements. Built by learners, for learners.</p>
+                        </div>
+                        <div class="p-5 rounded-2xl glass-card theme-panel">
+                            <div class="text-violet-400 font-bold text-lg mb-1">Continuously Evolving</div>
+                            <p class="text-xs muted-text">Regular deployment of advanced speed drills, C++ challenges, and intelligent learning features.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="absolute -inset-2 bg-gradient-to-r from-purple-500 to-violet-600 rounded-3xl blur-2xl opacity-20"></div>
+                    <div class="relative rounded-3xl glass-card theme-panel p-8 shadow-2xl">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400">
+                                <i data-lucide="target" class="w-7 h-7"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-xl light-text">Strategic Vision</h3>
+                                <p class="text-xs muted-text">Expanding educational access globally</p>
+                            </div>
+                        </div>
+                        <ul class="space-y-4 text-sm muted-text">
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-purple-400 shrink-0 mt-0.5"></i>
+                                <span>Establishing the premier global training platform for mental arithmetic.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-purple-400 shrink-0 mt-0.5"></i>
+                                <span>Offering LeetCode-styled algorithmic challenges with tailored C++ templates.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-purple-400 shrink-0 mt-0.5"></i>
+                                <span>Providing responsive automated guidance to facilitate complex problem-solving.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about-us" class="py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-purple-400 text-sm font-bold uppercase tracking-widest">About Us</span>
+                <h2 class="mt-2 text-3xl sm:text-5xl font-black light-text">Established April 2026</h2>
+                <p class="mt-4 muted-text text-base sm:text-lg">Dedicated to supporting and elevating student achievement across the globe.</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto glass-card theme-panel rounded-3xl p-8 sm:p-12 shadow-2xl">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h3 class="text-2xl font-bold light-text">Core Leadership Team</h3>
+                        <p class="text-xs muted-text mt-1">Active core developers: <span class="font-bold text-purple-400">2 dedicated builders</span>.</p>
+                    </div>
+                    <button onclick="openAboutUsFull()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-sm font-bold shadow-lg shadow-purple-600/20 transition">
+                        <i data-lucide="book-open" class="w-4 h-4"></i> Read More About Us
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <!-- 1. Aswin Krishnamoorthy (Founder) -->
+                    <div onclick="openAswinBio()" class="p-5 rounded-2xl team-card flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer hover:border-purple-500/50 transition shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-purple-600/20 text-purple-500 flex items-center justify-center font-bold text-xl shrink-0">1</div>
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="font-bold text-lg light-text">Aswin Krishnamoorthy</span>
+                                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-500 font-semibold whitespace-nowrap">Founder</span>
+                                </div>
+                                <p class="text-xs muted-text mt-1">First-year B.Tech IT student at Chennai Institute of Technology, FIDE 1491 chess player, and creator of speed math systems.</p>
+                            </div>
+                        </div>
+                        <a href="https://www.linkedin.com/in/aswin-n-k/?isSelfProfile=true" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-purple-300 text-xs font-semibold transition self-start sm:self-center shrink-0">
+                            LinkedIn <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+
+                    <!-- 2. Sreejeeth Vigneswaran (Co-Dev) -->
+                    <div onclick="openSreejeethBio()" class="p-5 rounded-2xl team-card flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer hover:border-violet-500/50 transition shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-violet-600/20 text-violet-500 flex items-center justify-center font-bold text-xl shrink-0">2</div>
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="font-bold text-lg light-text">Sreejeeth Vigneswaran</span>
+                                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-violet-500/20 text-violet-500 font-semibold whitespace-nowrap">Co-Dev of math.abacusarena.org</span>
+                                </div>
+                                <p class="text-xs muted-text mt-1">Co-Developer and Content Creator for math.abacusarena.org, driving media strategy and platform growth.</p>
+                            </div>
+                        </div>
+                        <a href="https://www.linkedin.com/in/sreejeeth-vigneswaran-5b0194429/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-violet-300 text-xs font-semibold transition self-start sm:self-center shrink-0">
+                            LinkedIn <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platforms Section -->
+    <section id="platforms" class="py-24 bg-slate-900/40 border-t border-slate-800/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-purple-400 text-sm font-bold uppercase tracking-widest">Platform Ecosystem</span>
+                <h2 class="mt-2 text-3xl sm:text-5xl font-black light-text">Explore Our Specialized Arenas</h2>
+                <p class="mt-4 muted-text text-base sm:text-lg">Domain-specific subdomains engineered for peak performance and targeted competency development.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Math Platform Card -->
+                <div class="glass-card theme-panel rounded-3xl p-8 sm:p-10 flex flex-col justify-between relative group hover:border-purple-500/50 transition duration-300 shadow-xl">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition">
+                            <i data-lucide="calculator" class="w-7 h-7"></i>
+                        </div>
+                        <span class="text-xs font-bold text-purple-500 tracking-wider uppercase">For Abacus Speed Solvers</span>
+                        <h3 class="text-2xl sm:text-3xl font-bold light-text mt-2">math.abacusarena.org</h3>
+                        <p class="mt-4 muted-text leading-relaxed">
+                            Engineered explicitly for competitive speed arithmetic champions and mental abacus practitioners. Regularly updated with dynamic speed drills, multi-digit operations, performance analytics, and structured training progression.
+                        </p>
+                        <ul class="mt-6 space-y-3 text-sm muted-text">
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-purple-500"></i> High-speed arithmetic & abacus training modules</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-purple-500"></i> Real-time precision and temporal metrics</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-purple-500"></i> Positioned as the premier mental math resource</li>
+                        </ul>
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                        <span class="text-xs text-purple-500 font-semibold">Active & Expanding</span>
+                        <a href="https://math.abacusarena.org" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-sm font-bold shadow-lg shadow-purple-600/20 transition">
+                            Open Math Arena <i data-lucide="external-link" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Coding Platform Card -->
+                <div class="glass-card theme-panel rounded-3xl p-8 sm:p-10 flex flex-col justify-between relative group hover:border-violet-500/50 transition duration-300 shadow-xl">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-violet-500/10 flex items-center justify-center text-violet-500 mb-6 group-hover:scale-110 transition">
+                            <i data-lucide="code-2" class="w-7 h-7"></i>
+                        </div>
+                        <span class="text-xs font-bold text-violet-500 tracking-wider uppercase">For Programmers & C++ Learners</span>
+                        <h3 class="text-2xl sm:text-3xl font-bold light-text mt-2">code.abacusarena.org</h3>
+                        <p class="mt-4 muted-text leading-relaxed">
+                            An interactive LeetCode-styled web environment featuring structured C++ array challenges, custom starter templates, immediate test case execution, accessible explanations, and continuous progress tracking.
+                        </p>
+                        <ul class="mt-6 space-y-3 text-sm muted-text">
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-violet-500"></i> LeetCode-inspired C++ array challenges</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-violet-500"></i> Configurable starter templates & input/output simulation</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-violet-500"></i> Automated code verification & progress diagnostics</li>
+                        </ul>
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                        <span class="text-xs text-violet-500 font-semibold">Active & Expanding</span>
+                        <a href="https://code.abacusarena.org" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-sm font-bold shadow-lg shadow-violet-600/20 transition">
+                            Open Coding Arena <i data-lucide="external-link" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Animated Arena Showcases -->
+    <section id="showcase" class="py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-purple-400 text-sm font-bold uppercase tracking-widest">Cinematic Previews</span>
+                <h2 class="mt-2 text-3xl sm:text-4xl font-black light-text">Milestones in algorithmic and arithmetic mastery</h2>
+                <p class="mt-4 muted-text text-base sm:text-lg">Select any preview card below to launch a cinematic walkthrough highlighting our mathematical and programming achievements</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Math Demo Card -->
+                <button type="button" class="showcase-card text-left rounded-3xl overflow-hidden glass-card theme-panel group transition hover:-translate-y-1 hover:shadow-2xl cursor-pointer" data-demo="math">
+                    <div class="relative h-64 sm:h-72 overflow-hidden bg-gradient-to-br from-purple-950 via-slate-900 to-indigo-950">
+                        <div class="absolute top-5 left-5 rounded-full bg-purple-500/25 border border-purple-500/30 px-3 py-1 text-xs font-bold text-purple-300">MENTAL MATH ARENA</div>
+                        <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-purple-950/80 to-transparent"></div>
+                        <div class="absolute left-1/2 -translate-x-1/2 bottom-12 text-6xl">🧒🏻</div>
+                        <div class="absolute top-16 left-1/2 -translate-x-1/2 rounded-2xl bg-slate-900/90 border border-slate-700 px-4 py-3 shadow-lg text-center">
+                            <div class="text-xs text-slate-400">Dynamic numerical stream</div>
+                            <div class="font-extrabold text-purple-400 text-base">28765 + 21985 + ...</div>
+                        </div>
+                        <div class="absolute inset-0 flex items-center justify-center bg-slate-950/0 group-hover:bg-slate-950/30 transition">
+                            <span class="inline-flex items-center gap-2 rounded-full bg-purple-600 px-6 py-3 text-white font-bold shadow-xl">
+                                <i data-lucide="play" class="w-4 h-4 fill-white"></i> Play Cinematic Video
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold light-text">Arithmetic calculation workflow</h3>
+                        <p class="mt-2 muted-text text-sm leading-relaxed">Observe sequential numerical rendering, mental computation, and automated verification</p>
+                    </div>
+                </button>
+
+                <!-- Coding Demo Card -->
+                <button type="button" class="showcase-card text-left rounded-3xl overflow-hidden glass-card theme-panel group transition hover:-translate-y-1 hover:shadow-2xl cursor-pointer" data-demo="code">
+                    <div class="relative h-64 sm:h-72 overflow-hidden bg-gradient-to-br from-slate-950 via-violet-950 to-purple-950">
+                        <div class="absolute top-5 left-5 rounded-full bg-violet-500/25 border border-violet-500/30 px-3 py-1 text-xs font-bold text-violet-300">CODING ARENA</div>
+                        <div class="absolute top-16 left-6 right-6 rounded-xl border border-white/10 bg-slate-950/80 p-4 font-mono text-xs shadow-xl">
+                            <div class="flex gap-1.5 mb-2"><i class="w-2.5 h-2.5 rounded-full bg-rose-500"></i><i class="w-2.5 h-2.5 rounded-full bg-amber-500"></i><i class="w-2.5 h-2.5 rounded-full bg-emerald-500"></i></div>
+                            <div class="text-violet-300">int sum = 0;</div>
+                            <div class="text-sky-300">for (int x : nums) sum += x;</div>
+                        </div>
+                        <div class="absolute inset-0 flex items-center justify-center bg-slate-950/0 group-hover:bg-slate-950/30 transition">
+                            <span class="inline-flex items-center gap-2 rounded-full bg-violet-600 px-6 py-3 text-white font-bold shadow-xl">
+                                <i data-lucide="play" class="w-4 h-4 fill-white"></i> Play Cinematic Video
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold light-text">Algorithmic execution milestone</h3>
+                        <p class="mt-2 muted-text text-sm leading-relaxed">Witness structured C++ code authoring, robust test case validation, and compilation output</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/60 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl bg-purple-600 flex items-center justify-center text-white font-bold">A</div>
+                <span class="font-bold text-sm light-text">AbacusArena.org</span>
+            </div>
+            <p class="text-xs muted-text text-center">AbacusArena · Established April 2026 · 100% Free Forever</p>
+            <div class="flex items-center gap-6 text-sm muted-text">
+                <a href="#mission" class="hover:text-purple-400 transition">Mission</a>
+                <a href="#about-us" class="hover:text-purple-400 transition">About Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Aswin's Creator Bio Modal -->
+    <div id="aswin-modal" class="fixed inset-0 z-[120] hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4" role="dialog" aria-modal="true">
+        <div class="relative w-full max-w-2xl rounded-3xl custom-modal-bg p-8 shadow-2xl">
+            <button onclick="closeAswinBio()" class="absolute right-4 top-4 rounded-full bg-slate-800 hover:bg-slate-700 p-2 text-slate-300 transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 to-violet-600 flex items-center justify-center text-white font-black text-2xl shadow-lg">A</div>
+                <div>
+                    <h3 class="text-2xl font-black text-purple-400">Aswin Krishnamoorthy</h3>
+                    <p class="text-xs muted-text">Founder & Lead Architect, AbacusArena.org</p>
+                </div>
+            </div>
+            <div class="space-y-4 text-sm leading-relaxed muted-text">
+                <p>I am a first-year Bachelor of Technology student specializing in Information Technology at the <strong>Chennai Institute of Technology</strong>.</p>
+                <p>As a competitive chess player with state-level experience and an official FIDE rating of <strong>1491</strong>, I have completed three rigorous levels of abacus training. My personal calculation rating on <a href="https://math.abacusarena.org" target="_blank" rel="noopener noreferrer" class="text-purple-500 underline font-semibold">math.abacusarena.org</a> consistently exceeds <strong>2100+</strong>.</p>
+                <p>Inspired by open platforms like <a href="https://lichess.org" target="_blank" rel="noopener noreferrer" class="text-purple-500 underline font-semibold">Lichess.org</a>—which instrumentalized my own competitive chess growth—I founded AbacusArena to provide students worldwide with uncompromising, free, and elite training environments.</p>
+                <div class="pt-2 flex items-center gap-4">
+                    <a href="https://lichess.org/@/AswinNK-Ultimate" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg shadow-purple-600/30 transition">
+                        View Lichess Profile (@AswinNK-Ultimate) <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sreejeeth's Bio Modal -->
+    <div id="sreejeeth-modal" class="fixed inset-0 z-[120] hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4" role="dialog" aria-modal="true">
+        <div class="relative w-full max-w-2xl rounded-3xl custom-modal-bg p-8 shadow-2xl">
+            <button onclick="closeSreejeethBio()" class="absolute right-4 top-4 rounded-full bg-slate-800 hover:bg-slate-700 p-2 text-slate-300 transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-violet-600 to-purple-600 flex items-center justify-center text-white font-black text-2xl shadow-lg">S</div>
+                <div>
+                    <h3 class="text-2xl font-black text-violet-400">Sreejeeth Vigneswaran</h3>
+                    <p class="text-xs muted-text">Co-Developer & Content Strategy Lead</p>
+                </div>
+            </div>
+            <div class="space-y-4 text-sm leading-relaxed muted-text">
+                <p>Sreejeeth serves as Co-Developer and Content Creator, driving platform development, media strategy, and community outreach.</p>
+                <p>Working in close collaboration with the founder, he oversees curation and system evaluation to ensure an optimized, highly engaging educational experience for all learners.</p>
+                <div class="pt-2">
+                    <a href="https://www.linkedin.com/in/sreejeeth-vigneswaran-5b0194429/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs shadow-lg shadow-violet-600/30 transition">
+                        View LinkedIn Profile <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- "Read More About Us" Full Modal -->
+    <div id="about-full-modal" class="fixed inset-0 z-[120] hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4" role="dialog" aria-modal="true">
+        <div class="relative w-full max-w-3xl rounded-3xl custom-modal-bg p-8 sm:p-10 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button onclick="closeAboutUsFull()" class="absolute right-4 top-4 rounded-full bg-slate-800 hover:bg-slate-700 p-2 text-slate-300 transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="text-purple-500 text-xs font-bold uppercase tracking-widest mb-1">About AbacusArena.org</div>
+            <h3 class="text-3xl font-black light-text mb-6">Our Comprehensive Story & Vision</h3>
+            <div class="space-y-4 text-sm sm:text-base leading-relaxed muted-text">
+                <p>Launched in <strong>April 2026</strong> by Aswin Krishnamoorthy, AbacusArena.org was established to eliminate financial barriers in mental arithmetic and computer science education.</p>
+                <p>In an educational technology landscape frequently governed by subscriptions and paywalls, our operational mandate remains absolute: delivering high-performance, open-access digital arenas where students globally can cultivate computational and arithmetic proficiency.</p>
+                
+                <h4 class="text-lg font-bold text-purple-400 pt-4">Our Core Team & Structure</h4>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <!-- Aswin Popup Card -->
+                    <div onclick="closeAboutUsFull(); openAswinBio();" class="p-4 rounded-2xl team-card cursor-pointer hover:border-purple-500/50 transition shadow-sm">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-purple-600/20 text-purple-500 flex items-center justify-center font-bold text-sm">1</div>
+                            <div>
+                                <h5 class="font-bold text-sm light-text">Aswin Krishnamoorthy</h5>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-500 font-semibold">Founder</span>
+                            </div>
+                        </div>
+                        <p class="text-xs muted-text">First-year B.Tech IT student at Chennai Institute of Technology, FIDE 1491 chess player.</p>
+                    </div>
+
+                    <!-- Sreejeeth Popup Card -->
+                    <div onclick="closeAboutUsFull(); openSreejeethBio();" class="p-4 rounded-2xl team-card cursor-pointer hover:border-violet-500/50 transition shadow-sm">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-violet-600/20 text-violet-500 flex items-center justify-center font-bold text-sm">2</div>
+                            <div>
+                                <h5 class="font-bold text-sm light-text">Sreejeeth Vigneswaran</h5>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-500 font-semibold">Co-Dev of math.abacusarena.org</span>
+                            </div>
+                        </div>
+                        <p class="text-xs muted-text">Co-Developer and Content Creator for math.abacusarena.org, driving platform growth.</p>
+                    </div>
+                </div>
+
+                <p class="pt-4">We extend our sincere appreciation as we continue expanding into a global hub for student excellence</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Cinematic Video Modal -->
+    <div id="demo-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/90 backdrop-blur-md p-4" role="dialog" aria-modal="true" aria-label="Cinematic Arena Preview">
+        <div class="relative w-full max-w-3xl overflow-hidden rounded-3xl custom-modal-bg shadow-2xl">
+            <button id="close-demo" type="button" class="absolute right-4 top-4 z-20 rounded-full bg-slate-800 hover:bg-slate-700 p-2 text-slate-300 transition" aria-label="Close cinematic preview">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            
+            <!-- Math Cinematic Scene -->
+            <div id="math-demo" class="demo-scene hidden min-h-[480px] bg-gradient-to-br from-purple-950 via-slate-900 to-indigo-950 p-8 sm:p-12 text-center flex flex-col justify-between text-white">
+                <div>
+                    <div class="text-xs font-bold tracking-widest text-purple-400 uppercase">ABACUSARENA · MENTAL MATH CINEMATIC</div>
+                    <div class="mt-6 rounded-2xl bg-slate-900/90 border border-slate-700 p-5 shadow-xl max-w-xl mx-auto">
+                        <div class="text-slate-400 text-xs uppercase tracking-wider">Speed Calculation Challenge</div>
+                        <div id="math-numbers-stream" class="math-equation mt-2 text-lg sm:text-2xl font-black text-purple-300 tracking-wide min-h-[36px] flex items-center justify-center gap-2">
+                            <span>28765</span> <span class="text-purple-500">+</span> <span>21985</span> <span class="text-purple-500">+</span> <span>94862</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage my-4 relative mx-auto max-w-xl w-full rounded-2xl bg-gradient-to-b from-purple-900/50 to-purple-950/90 border border-purple-500/30 p-6 overflow-hidden">
+                    <div class="text-6xl my-2">🧒🏻</div>
+                    <div id="math-status-text" class="text-purple-200 font-semibold text-sm">Numbers appearing on screen</div>
+                    <div id="math-texting-bubble" class="hidden cinematic-box mt-3 mx-auto rounded-2xl bg-purple-600 text-white px-5 py-2.5 max-w-xs text-sm font-bold shadow-lg">
+                        📱 Transmitting calculated answer: <span class="text-amber-300 font-black">295840</span>
+                    </div>
+                    <div id="math-correct-badge" class="hidden cinematic-box mt-3 mx-auto rounded-xl bg-emerald-500/20 border border-emerald-500/40 px-6 py-2.5 max-w-xs text-xl font-black text-emerald-300">
+                        295840 ✓ Correct
+                    </div>
+                </div>
+                <div class="text-xs text-slate-400">Cinematic Experience</div>
+            </div>
+
+            <!-- Coding Cinematic Scene -->
+            <div id="code-demo" class="demo-scene hidden min-h-[480px] bg-gradient-to-br from-slate-950 via-violet-950 to-purple-950 p-8 sm:p-12 text-center text-white flex flex-col justify-between">
+                <div>
+                    <div class="text-xs font-bold tracking-widest text-violet-300 uppercase">ABACUSARENA · CODING ARENA CINEMATIC</div>
+                    <div class="mt-6 mx-auto max-w-xl rounded-2xl border border-white/10 bg-slate-950/90 p-5 text-left font-mono text-xs sm:text-sm shadow-xl">
+                        <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
+                            <span class="text-slate-400 flex items-center gap-2"><i data-lucide="laptop" class="w-4 h-4 text-violet-400"></i> array_sum.cpp</span>
+                            <span class="text-violet-400">C++17</span>
+                        </div>
+                        <div id="code-typing-area" class="text-violet-300 min-h-[70px]">
+                            <span id="code-typed-text">int sum = 0;</span><span class="animate-pulse text-purple-400">|</span>
+                        </div>
+                        <div id="code-result-badge" class="hidden cinematic-box mt-3 rounded-lg bg-emerald-500/20 border border-emerald-500/40 p-2.5 font-bold text-emerald-300 text-xs">
+                            ✓ Compiling and running test cases successfully
+                        </div>
+                    </div>
+                </div>
+                <div id="code-prize-celebration" class="hidden cinematic-box my-4">
+                    <div class="text-6xl">🧑🏻‍💻 🚀 ⚡</div>
+                    <div class="mt-2 text-xl font-black text-amber-300">Test Cases Passed & Verified</div>
+                    <div class="mt-1 text-xs text-slate-300">Algorithmic execution successfully validated.</div>
+                </div>
+                <div id="code-hint-footer" class="text-xs text-slate-400">Authoring code → Running test cases → Compilation output</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Logic -->
+    <script>
+        lucide.createIcons();
+
+        // Theme Toggle Logic
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        let isDark = false;
+
+        function updateTheme() {
+            document.documentElement.classList.toggle('theme-light', !isDark);
+            document.body.classList.toggle('theme-light', !isDark);
+            themeIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+            themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+            themeToggle.title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+            lucide.createIcons();
+        }
+
+        document.documentElement.classList.add('theme-light');
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
+            updateTheme();
+        });
+
+        // Modal Functions for Team Profiles & Read More
+        function openAswinBio() {
+            document.getElementById('aswin-modal').classList.remove('hidden');
+            document.getElementById('aswin-modal').classList.add('flex');
+            lucide.createIcons();
+        }
+        function closeAswinBio() {
+            document.getElementById('aswin-modal').classList.add('hidden');
+            document.getElementById('aswin-modal').classList.remove('flex');
+        }
+
+        function openSreejeethBio() {
+            document.getElementById('sreejeeth-modal').classList.remove('hidden');
+            document.getElementById('sreejeeth-modal').classList.add('flex');
+            lucide.createIcons();
+        }
+        function closeSreejeethBio() {
+            document.getElementById('sreejeeth-modal').classList.add('hidden');
+            document.getElementById('sreejeeth-modal').classList.remove('flex');
+        }
+
+        function openAboutUsFull() {
+            document.getElementById('about-full-modal').classList.remove('hidden');
+            document.getElementById('about-full-modal').classList.add('flex');
+            lucide.createIcons();
+        }
+        function closeAboutUsFull() {
+            document.getElementById('about-full-modal').classList.add('hidden');
+            document.getElementById('about-full-modal').classList.remove('flex');
+        }
+
+        // Close modals on background click
+        document.getElementById('aswin-modal').addEventListener('click', (e) => { if (e.target.id === 'aswin-modal') closeAswinBio(); });
+        document.getElementById('sreejeeth-modal').addEventListener('click', (e) => { if (e.target.id === 'sreejeeth-modal') closeSreejeethBio(); });
+        document.getElementById('about-full-modal').addEventListener('click', (e) => { if (e.target.id === 'about-full-modal') closeAboutUsFull(); });
+
+        // Scroll Reveal Intersection Observer
+        const revealTargets = document.querySelectorAll('section > div, .glass-card, .showcase-card');
+        revealTargets.forEach((element, index) => {
+            element.classList.add('reveal');
+            element.style.transitionDelay = `${(index % 3) * 60}ms`;
+        });
+
+        if ('IntersectionObserver' in window) {
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    } else {
+                        if (entry.boundingClientRect.top > 0) {
+                            entry.target.classList.remove('is-visible');
+                        }
+                    }
+                });
+            }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+            revealTargets.forEach(element => revealObserver.observe(element));
+        } else {
+            revealTargets.forEach(element => element.classList.add('is-visible'));
+        }
+
+        // Cinematic Modal Video Simulation with Auto-Close
+        const modal = document.getElementById('demo-modal');
+        const mathScene = document.getElementById('math-demo');
+        const codeScene = document.getElementById('code-demo');
+        let demoTimers = [];
+
+        function clearDemoTimers() {
+            demoTimers.forEach(clearTimeout);
+            demoTimers = [];
+        }
+
+        function schedule(fn, delay) {
+            demoTimers.push(setTimeout(fn, delay));
+        }
+
+        function openDemo(kind) {
+            clearDemoTimers();
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            mathScene.classList.toggle('hidden', kind !== 'math');
+            codeScene.classList.toggle('hidden', kind !== 'code');
+
+            if (kind === 'math') {
+                const numbersStream = document.getElementById('math-numbers-stream');
+                const statusText = document.getElementById('math-status-text');
+                const textingBubble = document.getElementById('math-texting-bubble');
+                const correctBadge = document.getElementById('math-correct-badge');
+
+                numbersStream.innerHTML = '<span>28765</span> <span class="text-purple-500">+</span> <span>21985</span> <span class="text-purple-500">+</span> <span>94862</span>';
+                statusText.textContent = 'Numbers appearing rapidly on screen';
+                textingBubble.classList.add('hidden');
+                correctBadge.classList.add('hidden');
+
+                schedule(() => {
+                    numbersStream.innerHTML = '<span>28765</span> + <span>21985</span> + <span>94862</span> + <span>87483</span> + <span>62745</span>';
+                    statusText.textContent = 'Mental computation in progress';
+                }, 3000);
+
+                schedule(() => {
+                    textingBubble.classList.remove('hidden');
+                    statusText.textContent = 'Transmitting solution';
+                }, 6000);
+
+                schedule(() => {
+                    correctBadge.classList.remove('hidden');
+                    textingBubble.classList.add('hidden');
+                    statusText.textContent = 'Verified correct by automated engine';
+                }, 8500);
+
+                // Auto-close cinematic video after completion
+                schedule(() => {
+                    closeDemo();
+                }, 11500);
+
+            } else {
+                const typedText = document.getElementById('code-typed-text');
+                const resultBadge = document.getElementById('code-result-badge');
+                const prizeCelebration = document.getElementById('code-prize-celebration');
+                const hintFooter = document.getElementById('code-hint-footer');
+
+                typedText.textContent = '';
+                resultBadge.classList.add('hidden');
+                prizeCelebration.classList.add('hidden');
+                hintFooter.textContent = 'Authoring C++ algorithmic code';
+
+                const snippet = 'int sum = 0;\nfor (int x : nums) {\n    sum += x;\n}\nreturn sum;';
+                let charIndex = 0;
+
+                function typeCode() {
+                    if (charIndex < snippet.length) {
+                        typedText.textContent += snippet.charAt(charIndex);
+                        charIndex++;
+                        demoTimers.push(setTimeout(typeCode, 45));
+                    }
+                }
+                typeCode();
+
+                schedule(() => {
+                    resultBadge.classList.remove('hidden');
+                    hintFooter.textContent = 'Running test cases against test suite';
+                }, 5500);
+
+                schedule(() => {
+                    prizeCelebration.classList.remove('hidden');
+                    hintFooter.textContent = 'Compilation successful & test cases passed.';
+                }, 8500);
+
+                // Auto-close cinematic video after completion
+                schedule(() => {
+                    closeDemo();
+                }, 11500);
+            }
+        }
+
+        document.querySelectorAll('.showcase-card').forEach(card => {
+            card.addEventListener('click', () => openDemo(card.dataset.demo));
+        });
+
+        function closeDemo() {
+            clearDemoTimers();
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        document.getElementById('close-demo').addEventListener('click', closeDemo);
+        modal.addEventListener('click', event => { if (event.target === modal) closeDemo(); });
+        document.addEventListener('keydown', event => { if (event.key === 'Escape') closeDemo(); });
+    </script>
+</body>
+</html>
